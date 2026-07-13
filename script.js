@@ -24,7 +24,7 @@ let bgPlane, bgMaterial;
 let bgTexture = null;
 let bgDepthTexture = null;
 const cursor = { x: 0, y: 0, lerpX: 0, lerpY: 0 };
-const settings = { xThreshold: 40, yThreshold: 60, showWebcam: false, showCrosshair: false, spawnX: 0.6, spawnY: 0.55 };
+const settings = { xThreshold: 40, yThreshold: 60, showWebcam: false, showCrosshair: false, showMV: false, spawnX: 0.6, spawnY: 0.55 };
 let gui = null;
 
 // 最新的人臉位置
@@ -110,9 +110,14 @@ function initGUI() {
         gui.add(settings, 'showCrosshair').name('顯示準心').onChange(() => {
             if (!settings.showCrosshair) crosshair.style.display = 'none';
         });
+
+        gui.add(settings, 'showMV').name('顯示 MV 影片').onChange(() => {
+            if (mvVideo) mvVideo.style.display = settings.showMV ? 'block' : 'none';
+        });
         
-        // 套用預設視訊畫面狀態
+        // 套用預設視訊與影片畫面狀態
         videoElement.style.opacity = settings.showWebcam ? '0.8' : '0';
+        if (mvVideo) mvVideo.style.display = settings.showMV ? 'block' : 'none';
 
         // 加入花瓣噴發位置的微調控制
         gui.add(settings, 'spawnX').min(0).max(1).step(0.01).name('花瓣起點 X (左右)');
