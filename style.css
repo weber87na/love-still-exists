@@ -14,28 +14,61 @@ body, html {
     height: 100vh;
 }
 
-/* 讓視訊畫面填滿且水平翻轉（因為是自拍鏡頭） */
-.input_video {
+#background_image {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1);
     z-index: 1;
-    /* 加上黑白與加深對比的濾鏡，讓紅玫瑰花瓣更顯眼 */
-    filter: grayscale(100%) brightness(70%) contrast(120%);
 }
 
-#three-canvas-container {
+/* 顯示視訊畫面於左下角 */
+.input_video {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    top: auto;
+    width: 240px;
+    height: auto;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transform: scaleX(-1); /* 鏡像顯示 */
+    opacity: 0.8;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 左上方 MV 影片 */
+#mv_video {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 640px; /* 影片放大點 */
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+    z-index: 50;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#three-bg-container, #three-fg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
     pointer-events: none; /* 讓點擊事件穿透到下層 */
+}
+
+#three-bg-container {
+    z-index: 2; /* 背景在最底層 */
+}
+
+#three-fg-container {
+    z-index: 10; /* 花瓣前景在黑膠之上 */
 }
 
 #crosshair {
@@ -84,4 +117,132 @@ body, html {
     border-radius: 10px;
     pointer-events: none;
     transition: opacity 0.5s;
+}
+
+/* 黑膠唱片設計與動畫 */
+#vinyl-record {
+    position: absolute;
+    top: 55%; /* 往上移動些 */
+    left: 40%; /* 往左移點 */
+    width: 480px; /* 再放大點 */
+    height: 480px;
+    margin-top: -240px;
+    margin-left: -240px;
+    border-radius: 50%;
+    background: #111;
+    /* 外圈加上白色邊框 */
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    /* 增加光澤 (conic-gradient) 與重複的放射狀漸層畫出唱片溝槽 */
+    background-image: 
+        conic-gradient(
+            from 45deg,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.4) 15%,
+            rgba(255,255,255,0) 30%,
+            rgba(255,255,255,0) 50%,
+            rgba(255,255,255,0.4) 65%,
+            rgba(255,255,255,0) 80%
+        ),
+        repeating-radial-gradient(
+            circle,
+            #111 0px,
+            #111 4px,
+            #222 5px,
+            #111 6px
+        );
+    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
+    z-index: 5; /* 顯示在畫布上方，但在高層 UI 下方 */
+    pointer-events: none;
+    animation: spin 3s linear infinite, flickerGloss 4s infinite alternate;
+    animation-play-state: paused; /* 預設暫停轉動 */
+}
+
+/* 播放狀態下恢復動畫 */
+#vinyl-record.playing,
+#vinyl-record.playing::before {
+    animation-play-state: running;
+}
+
+/* 增加流動的光線掃過效果 */
+#vinyl-record::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+        105deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0.6) 50%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 200%;
+    animation: flowLight 2.5s infinite;
+    animation-play-state: paused; /* 預設暫停流動光 */
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 唱片中間的標籤貼紙 */
+.vinyl-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    margin-top: -75px;
+    margin-left: -75px;
+    border-radius: 50%;
+    /* 使用多個花瓣素材與漸層背景，讓顏色豐富不單調 */
+    background-color: #8B0000;
+    background-image: 
+        url('petal/red-petal-01-01.png'),
+        url('petal/red-petal-02-10.png'),
+        url('petal/red-petal-03-20.png'),
+        radial-gradient(circle, #ff4e50, #f9d423);
+    background-size: 80px, 70px, 90px, cover;
+    background-position: top left, bottom right, center, center;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    /* 內圈使用白色 */
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
+}
+
+/* 唱片正中央的小孔 (中心點使用白色) */
+.vinyl-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: #ffffff; /* 中心點白色 */
+    border: 2px solid #ccc; /* 增加一點立體邊緣 */
+    box-shadow: 0 0 8px rgba(255,255,255,0.8), inset 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* 旋轉動畫 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 光澤閃爍動畫 */
+@keyframes flickerGloss {
+    0% { filter: brightness(1) contrast(1); }
+    50% { filter: brightness(1.3) contrast(1.2); }
+    100% { filter: brightness(0.9) contrast(1); }
+}
+
+/* 光線流動掃過動畫 */
+@keyframes flowLight {
+    0% { background-position: -100% -100%; opacity: 0; }
+    30% { opacity: 1; }
+    70% { background-position: 100% 100%; opacity: 0.8; }
+    100% { background-position: 200% 200%; opacity: 0; }
 }

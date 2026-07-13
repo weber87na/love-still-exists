@@ -3,22 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>打蟑螂遊戲</title>
+    <title>Love Still Exists</title>
+    <link rel="icon" href="petal/red-petal-01-01.png" type="image/png">
     <link rel="stylesheet" href="style.css">
     <!-- MediaPipe -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js" crossorigin="anonymous"></script>
-    <!-- Three.js -->
+    <!-- Three.js & dat.gui -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 </head>
 <body>
     <div id="game-container">
-        <!-- 視訊畫面 (鏡像顯示) -->
+        <!-- 背景圖片將由 Three.js 負責渲染 -->
+        <!-- 視訊畫面 (隱藏但維持運作以偵測手勢) -->
         <video id="input_video" class="input_video" autoplay playsinline></video>
-        <!-- Three.js 畫布 -->
-        <div id="three-canvas-container"></div>
+        <!-- 新增的 MV 影片 (放置於畫面左側) -->
+        <video id="mv_video" src="mv_short.webm" playsinline></video>
+        
+        <!-- Three.js 畫布 (背景層) -->
+        <div id="three-bg-container"></div>
+
+        <!-- 黑膠唱片 -->
+        <div id="vinyl-record">
+            <div class="vinyl-label"></div>
+        </div>
+
+        <!-- Three.js 畫布 (前景花瓣層) -->
+        <div id="three-fg-container"></div>
         <!-- UI -->
         <div id="crosshair"></div>
         <div id="instructions">請將手舉起並比出手槍姿勢</div>
