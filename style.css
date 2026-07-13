@@ -68,7 +68,7 @@ body, html {
 }
 
 #three-fg-container {
-    z-index: 10; /* 花瓣前景在黑膠之上 */
+    z-index: 60; /* 花瓣前景在影片之上 */
 }
 
 #crosshair {
@@ -152,7 +152,8 @@ body, html {
         );
     box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
     z-index: 5; /* 顯示在畫布上方，但在高層 UI 下方 */
-    pointer-events: none;
+    pointer-events: auto; /* 使其可被點擊 */
+    cursor: pointer; /* 點擊游標 */
     animation: spin 3s linear infinite, flickerGloss 4s infinite alternate;
     animation-play-state: paused; /* 預設暫停轉動 */
 }

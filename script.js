@@ -12,6 +12,7 @@ let isGameStarted = false;
 let lastShootTime = 0;
 const SHOOT_COOLDOWN = 300; // 開火冷卻時間 (毫秒)
 let isThumbCocked = false; // 判斷板機是否已就位 (大拇指翹起)
+let hasStartedVideo = false; // 記錄是否已經觸發過第一次播放
 
 // Three.js 變數
 let sceneBg, sceneFg, camera, rendererBg, rendererFg, raycaster;
@@ -316,10 +317,11 @@ function initMediaPipe() {
 
                 shoot(spawnX, spawnY, sprayDirX);
                 
-                // 播放 MV
-                if (mvVideo) {
+                // 播放 MV (僅限第一次開槍)
+                if (mvVideo && !hasStartedVideo) {
                     mvVideo.currentTime = 0;
                     mvVideo.play();
+                    hasStartedVideo = true;
                 }
                 
                 lastShootTime = now;
@@ -472,6 +474,16 @@ window.onload = () => {
         });
         mvVideo.addEventListener('ended', () => {
             vinylRecord.classList.remove('playing');
+        });
+
+        // 點擊黑膠唱片控制播放/暫停
+        vinylRecord.addEventListener('click', () => {
+            if (mvVideo.paused) {
+                mvVideo.play();
+                hasStartedVideo = true; // 點擊播放也算觸發了第一次
+            } else {
+                mvVideo.pause();
+            }
         });
     }
 };
